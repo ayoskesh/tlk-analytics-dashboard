@@ -1,6 +1,7 @@
 import os
 import subprocess
 import sys
+import importlib  # <-- ДОБАВИЛИ
 
 # 1. Создаем путь к локальной папке для библиотек внутри вашего проекта
 local_dir = os.path.join(os.getcwd(), "local_packages")
@@ -18,15 +19,18 @@ except ModuleNotFoundError:
     if not os.path.exists(local_dir):
         os.makedirs(local_dir)
     
-    # Скачиваем plotly строго в нашу локальную папку, куда у нас есть права на запись
+    # Скачиваем plotly строго в нашу локальную папку
     subprocess.check_call([sys.executable, "-m", "pip", "install", "--target", local_dir, "plotly"])
+    
+    # <-- КРИТИЧЕСКИ ВАЖНО: сбрасываем кэш, чтобы Python увидел новую папку
+    importlib.invalidate_caches() 
     
     import plotly
     import plotly.express as px
 
+# Импортируем оставшиеся библиотеки (дубликат plotly отсюда УБРАЛИ)
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 
 # 1. Настройка страницы (Пункт 1 задания)
 st.set_page_config(
