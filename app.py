@@ -1,3 +1,15 @@
+import subprocess
+import sys
+
+# Проверяем, установлен ли plotly. Если нет — устанавливаем прямо из кода
+try:
+    import plotly
+    import plotly.express as px
+except ModuleNotFoundError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "plotly"])
+    import plotly
+    import plotly.express as px
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
