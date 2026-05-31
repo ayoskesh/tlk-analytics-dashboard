@@ -1,12 +1,26 @@
+import os
 import subprocess
 import sys
 
-# Проверяем, установлен ли plotly. Если нет — устанавливаем прямо из кода
+# 1. Создаем путь к локальной папке для библиотек внутри вашего проекта
+local_dir = os.path.join(os.getcwd(), "local_packages")
+
+# 2. Говорим Python сначала искать библиотеки в этой папке
+if local_dir not in sys.path:
+    sys.path.insert(0, local_dir)
+
+# 3. Проверяем и устанавливаем Plotly локально
 try:
     import plotly
     import plotly.express as px
 except ModuleNotFoundError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "plotly"])
+    # Если папки еще нет — создаем её
+    if not os.path.exists(local_dir):
+        os.makedirs(local_dir)
+    
+    # Скачиваем plotly строго в нашу локальную папку, куда у нас есть права на запись
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "--target", local_dir, "plotly"])
+    
     import plotly
     import plotly.express as px
 
